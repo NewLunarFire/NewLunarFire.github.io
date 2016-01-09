@@ -33,15 +33,12 @@
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="#">NLF.GH.IO</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="#">Accueil</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -49,12 +46,23 @@
 
     <div class="container">
 
-      <div class="starter-template">
-        <h1>NewLunarFire dot Github dot IO</h1>
-        <p class="lead">The body is yet empty, but should be filling up soon.</p>
-		<p id="browser"></p>
-		<p>Contact me at: <i>tommy.savaria@protonmail.ch</i></p>
+    <h1>Projet de NewLunarFire</h1>
+	  
+	  <hr class="featurette-divider">
+	  
+	  <div class="row featurette">
+        <div>
+          <h2 class="featurette-heading"><a href="https://github.com/NewLunarFire/Modele-Rapport-GIUDES">Modèle de rapport GIUDES <span class="text-muted">en LaTeX</span></a></h2>
+          <p class="lead">Utilisez ce modèle fait avec LaTeX pour monter vos rapports d'APP et autre productions pour le département de Génie Informatique/Électrique de l'Université de Sherbrooke.</p>
+        </div>
       </div>
+	  
+	  <hr class="featurette-divider">
+	  
+	  <div>
+		<p id="browser"></p>
+		<p>Contaactez-moi à: <a href="mailto:tommy.savaria@protonmail.ch"><i>tommy.savaria@protonmail.ch</i></a></p>
+	  </div>
 
     </div><!-- /.container -->
 
@@ -69,10 +77,14 @@
     <script src="js/ie10-viewport-bug-workaround.js"></script>
 	<script src="js/detect_browser.js"></script>
 	<script>
+		var browserString = "Vous utilisez ";
+		
 		if(isMobile.any())
-			$("#browser").html("You are using " + BrowserDetect.browser + " on mobile");
+			browserString += BrowserDetect.browser + " sur mobile";
 		else
-			$("#browser").html("You are using " + BrowserDetect.browser + " on desktop");
+			browserString += BrowserDetect.browser + " sur desktop";
+			
+		$("#browser").html(browserString);
 	</script>
   </body>
 </html>
