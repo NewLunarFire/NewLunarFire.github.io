@@ -45,24 +45,29 @@
     </nav>
 
     <div class="container">
-
-    <h1>Projet de NewLunarFire</h1>
-	  
-	  <hr class="featurette-divider">
-	  
-	  <div class="row featurette">
-        <div>
-          <h2 class="featurette-heading"><a href="https://github.com/NewLunarFire/Modele-Rapport-GIUDES">Modèle de rapport GIUDES <span class="text-muted">en LaTeX</span></a></h2>
-          <p class="lead">Utilisez ce modèle fait avec LaTeX pour monter vos rapports d'APP et autre productions pour le département de Génie Informatique/Électrique de l'Université de Sherbrooke.</p>
-        </div>
-      </div>
-	  
-	  <hr class="featurette-divider">
-	  
-	  <div>
-		<p id="browser"></p>
-		<p>Contaactez-moi à: <a href="mailto:tommy.savaria@protonmail.ch"><i>tommy.savaria@protonmail.ch</i></a></p>
-	  </div>
+	
+		<h1>Projets de NewLunarFire</h1>
+		  
+		<hr class="featurette-divider">
+		
+		<div class="row featurette" id="glacial">
+			<h2 class="featurette-heading"><a id="glaciallien">Glacial <span class="text-muted" id="glacialversion"></span></a></h2>
+			<p class="lead">Extension Firefox / Chrome / Safari pour améliorer le site GEGI de l'Université.</p>
+		</div>
+			
+		<hr class="featurette-divider">
+			
+		<div class="row featurette" id="modelerapport">
+			<h2 class="featurette-heading"><a href="https://github.com/NewLunarFire/Modele-Rapport-GIUDES">Modèle de rapport GIUDES <span class="text-muted">en LaTeX</span></a></h2>
+			<p class="lead">Utilisez ce modèle fait avec LaTeX pour monter vos rapports d'APP et autre productions pour le département de Génie Informatique/Électrique de l'Université de Sherbrooke.</p>
+		</div>
+		
+		<hr class="featurette-divider">
+		  
+		<div>
+			<p id="browser"></p>
+			<p>Contactez-moi à: <a href="mailto:tommy.savaria@protonmail.ch"><i>tommy.savaria@protonmail.ch</i></a></p>
+		</div>
 
     </div><!-- /.container -->
 
@@ -78,6 +83,14 @@
 	<script src="js/detect_browser.js"></script>
 	<script>
 		var browserString = "Vous utilisez ";
+		var latestRelease;
+		$.getJSON("https://api.github.com/repos/antoineMoPa/glacial/releases", "",
+			function(data, textStatus, jqXHR) {
+				latestRelease = data[data.length - 1];
+				$("#glacialversion").html(latestRelease.name);
+				$("#glaciallien").attr("href", latestRelease.html_url);
+			}
+		);
 		
 		if(isMobile.any())
 			browserString += BrowserDetect.browser + " sur mobile";
