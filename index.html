@@ -53,6 +53,7 @@
 		<div class="row featurette" id="glacial">
 			<h2 class="featurette-heading"><a id="glaciallien">Glacial <span class="text-muted" id="glacialversion"></span></a></h2>
 			<p class="lead">Extension Firefox / Chrome / Safari pour améliorer le site GEGI de l'Université.</p>
+			
 		</div>
 			
 		<hr class="featurette-divider">
@@ -89,6 +90,19 @@
 				latestRelease = data[data.length - 1];
 				$("#glacialversion").html(latestRelease.name);
 				$("#glaciallien").attr("href", latestRelease.html_url);
+				
+				if(!isMobile.any())
+				{
+					if(BrowserDetect.browser == "Firefox")
+					{
+						$("#glacial").append("<p><a href=\"" + latestRelease.assets[1].browser_download_url + "\" class=\"btn btn-lg btn-warning\">Install in Firefox</a></p>");
+					}
+					
+					if(BrowserDetect.browser == "Chrome")
+					{
+						$("#glacial").append("<p><a href=\"" + latestRelease.assets[0].browser_download_url + "\" class=\"btn btn-lg btn-primary\">Install in Chrome</a></p>");
+					}
+				}
 			}
 		);
 		
