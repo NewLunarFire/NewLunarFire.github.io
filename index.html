@@ -82,23 +82,15 @@
     <script src="js/ie10-viewport-bug-workaround.js"></script>
 	<script src="js/detect_browser.js"></script>
 	<script>
-		$.getJSON("https://api.github.com/repos/antoineMoPa/glacial/releases", "",
+		$.getJSON("https://api.github.com/repos/NewLunarFire/glacial/releases", "",
 			function(data, textStatus, jqXHR) {
 				var latestRelease = data[data.length - 1];
 				$("#glacialversion").html(latestRelease.name);
 				$("#glaciallien").attr("href", latestRelease.html_url);
 				
-				if(!isMobile.any())
+				if((!isMobile.any()) && (BrowserDetect.browser == "Firefox"))
 				{
-					if(BrowserDetect.browser == "Firefox")
-					{
-						$("#glacial").append("<p><a href=\"" + latestRelease.assets[1].browser_download_url + "\" class=\"btn btn-lg btn-warning\">Installer pour Firefox</a></p>");
-					}
-					
-					if(BrowserDetect.browser == "Chrome")
-					{
-						$("#glacial").append("<p><a href=\"" + latestRelease.assets[0].browser_download_url + "\" class=\"btn btn-lg btn-primary\">Installer pour Chrome</a></p>");
-					}
+					$("#glacial").append("<p><a href=\"" + latestRelease.assets[0].browser_download_url + "\" class=\"btn btn-lg btn-warning\">Installer pour Firefox</a></p>");
 				}
 			}
 		);
