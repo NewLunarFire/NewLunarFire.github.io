@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"> 
+        <title>FluffleFuck intepreter</title>
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+        <script id="fluffle" type="text/javascript">
+            function toBrainFuck(code) {
+                var bf = "";
+                var i = 0;
+                while(i < code.length) {
+                    if(code[i] == 'b') {
+                        if(code[i+1] == 'l') {
+                            bf += '-';
+                            i +=2 ;
+                        } else {
+                            bf += '>';
+                            i++;
+                        }
+                    } else if(code[i] == 't') {
+                        bf += '<';
+                        i++
+                    } else if(code[i] == '!') {
+                        bf += '.';
+                        i++;
+                    } else if(code[i] == '?') {
+                        bf += ',';
+                        i++;
+                    } else if(code[i] == 'p') {
+                        if(code[i+1] == 'f') {
+                            bf += '+';
+                            i += 2;
+                        } else {
+                            alert("Compilation error near " + i)
+                            return;
+                        }
+                    } else if(code[i] == '*') {
+                        if(code.substring(i, i+6) == '*gasp*') {
+                            bf += '[';
+                            i += 6;
+                        } else  if(code.substring(i, i+6) == '*pomf*') {
+                            bf += ']';
+                            i +=6;
+                        } else {
+                            alert("Compilation error near " + i)
+                            return;
+                        }
+                    } else {
+                        alert("Compilation error near " + i)
+                        return;
+                    }
+                }
+
+                return bf;
+            }
+
+            function execute(bf) {
+                var memory = [0]
+                
+                var input = document.getElementById("inputarea").value;
+                var output = document.getElementById("outputarea").value;
+
+                var memptr = 0;
+                var inptr = 0;
+                var i = 0;
+
+                while(i < bf.length) {
+                    if(bf[i] == '+')
+                        memory[memptr]++;
+                    else if(bf[i] == '-')
+                        memory[memptr]--;
+                    else if(bf[i] == '>') {
+                        memptr++;
+                        if(memory.length <= memptr)
+                            memory[memptr] = 0;
+                    } else if(bf[i] == '<') {
+                        memptr--;
+                    } else if(bf[i] == '.')
+                        document.getElementById("outputarea").value += String.fromCharCode(memory[memptr]);
+                    else if(bf[i] == ',') {
+                        if(inptr >= input.length)
+                             memory[memptr] = -1;    
+                        else
+                            memory[memptr] = input.charCodeAt(inptr++);
+                    } else if(bf[i] == '[') {
+                        if(memory[memptr] == 0) {
+                            var s = 1;
+                            while(s > 0) {
+                                i++;
+                                if(bf[i] == '[')
+                                    s++;
+                                else if(bf[i] == ']')
+                                    s--;
+                            }
+                        }
+                    } else if(bf[i] == ']') {
+                        if(memory[memptr] != 0) {
+                            var s = 1;
+                            while(s > 0) {
+                                i--;
+                                if(bf[i] == '[')
+                                    s--;
+                                else if(bf[i] == ']')
+                                    s++;
+                            }
+                        }
+                    }
+
+                    i++;
+                }
+            }
+
+            function magic() {
+                var bf = toBrainFuck(document.getElementById("codearea").value);
+                execute(bf);
+            }
+        </script>
+        <style type="text/css">
+            h1, h3, #copyleft {
+                text-align: center;
+            }
+
+            body {
+                background-color: hotpink;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            img {
+                height: 33px;
+            }
+
+            img.flip {
+                    -moz-transform: scaleX(-1);
+                    -o-transform: scaleX(-1);
+                    -webkit-transform: scaleX(-1);
+                    transform: scaleX(-1);
+                    filter: FlipH;
+                    -ms-filter: "FlipH";
+            }
+            textarea {
+                width: 100%;
+                height: 100px;
+                background-color: antiquewhite;
+            }
+
+            #codearea {
+                display:block;
+                height: 250px;
+            }
+
+            #codeAreaDiv {
+                float: left;
+                width: 50%;     
+            }
+
+            #inputOutputDiv {
+                float: right;
+                width: 45%;
+                height: 100%;
+            }
+
+            #executionDiv {
+                width: 100%;
+            }
+
+            #sourceCodeArea {
+                border: 1px solid black;
+                background-color: antiquewhite;
+            }
+
+            #sourceDiv {
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+        <h1><img src="fluffle.png" alt=""/>Brain Puff Interpreter<img src="fluffle.png" class="flip" alt=""/></h1>
+        <div id="executionDiv">
+            <div id="codeAreaDiv">
+                <p>Code</p>
+                <hr/>
+                <textarea id="codearea"></textarea>
+            </div>
+            <div id="inputOutputDiv">
+                <p>Input</p>
+                <hr/>
+                <textarea id="inputarea"></textarea>
+                <p>Output</p>
+                <hr/>
+                <textarea id="outputarea"></textarea>
+            </div>
+             <button onclick="magic()">Magic!</button>  
+        </div>
+        <hr/>
+        <div id="sourceDiv">
+            <h3>Source Code</h3>
+            <pre class="prettyprint" id="sourceCodeArea"> </pre>
+            </p>
+        </div>
+        <hr/>
+        <div id="copyleft">
+            (ↄ) Tommy Savaria, 2017 : <a href="https://newlunarfire.github.io">https://newlunarfire.github.io</a>
+        </div>
+        <!-- BrainPuff interpreter -->
+        <script type="text/javascript">
+            var lines =document.getElementById("fluffle").text.split('\n');
+            for(var i in lines)
+                document.getElementById("sourceCodeArea").innerHTML += lines[i].substr(12, lines[i].length) + '\n';
+        </script>
+    </body>
+</html>
