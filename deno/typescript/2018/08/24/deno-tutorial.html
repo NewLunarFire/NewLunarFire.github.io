@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Introduction to Deno | Tommy Savaria’s blog</title>
+<meta name="generator" content="Jekyll v3.8.3" />
+<meta property="og:title" content="Introduction to Deno" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources." />
+<meta property="og:description" content="Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources." />
+<link rel="canonical" href="/deno/typescript/2018/08/24/deno-tutorial.html" />
+<meta property="og:url" content="/deno/typescript/2018/08/24/deno-tutorial.html" />
+<meta property="og:site_name" content="Tommy Savaria’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-08-24T09:07:00-04:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"/deno/typescript/2018/08/24/deno-tutorial.html"},"@type":"BlogPosting","url":"/deno/typescript/2018/08/24/deno-tutorial.html","headline":"Introduction to Deno","dateModified":"2018-08-24T09:07:00-04:00","datePublished":"2018-08-24T09:07:00-04:00","description":"Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources.","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Tommy Savaria's blog" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Tommy Savaria&#39;s blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Introduction to Deno</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2018-08-24T09:07:00-04:00" itemprop="datePublished">Aug 24, 2018
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources.</p>
+
+<p>The runtime seeks to fix a number of issue brought forward by NodeJS. No more unwieldy package.json or constantly changing dependencies, you either save your file in your project or load them from http ressources, after which they are cached forever. Also, gyp is absent from this, the project is now built with GN and calls to native function is no longer done directly, but through flatbuffers message passing. It also comes with Typescript support out-of-the-box.</p>
+
+<p>But I’m not here to teach you about the greatness of Deno, but rather to give you a quick tutorial to get started with the new runtime.</p>
+
+<h2 id="installing">Installing</h2>
+
+<p>The binaries are available from <a href="https://github.com/denoland/deno/">Deno’s Github repository</a> . You can alos read the Readme from the repo and try to compile it yourself. The build process is rather resource-hungry, so make sure you have at least 4GB of RAM and a good SSD, or you could spend hours waiting for the build to finish.</p>
+
+<h2 id="running-scripts">Running scripts</h2>
+
+<p>In deno, you can run either Javascript or Typescript files. You can run your code by executing Deno with the filename as argument. Look into the repo’s tests folder to see a number of example Deno scripts.</p>
+
+<h2 id="console-output">Console output</h2>
+
+<p>As with any language / framework, the first thing you can do is output a message to the console. You can simply write the following to print <em>Hello World!</em></p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Hello world!"</span><span class="p">)</span></code></pre></figure>
+
+<h2 id="filesystem-access">Filesystem Access</h2>
+
+<p>Deno offers basic synchronous filesystem access with the <em>readFileSync</em> and <em>writeFileSync</em> functions. The <em>readFileSync</em> function takes the file’s path as argument (which can either by a path relative to the current working directory or an absoule path) and returns the file’s contents. Create a file with ‘Hello World’ in it then save it to the filesystem, and read it by the executing the following:</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="p">{</span> <span class="nx">readFileSync</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"deno"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="s2">"hello.txt"</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span></code></pre></figure>
+
+<p>The output should be the following</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno scripts/hello.ts
+Uint8Array <span class="o">{</span> 0: 72, 1: 101, 2: 108, 3: 108, 4: 111, 5: 32, 6: 87, 7: 111, 8: 114, 9: 108, 10: 100 <span class="o">}</span></code></pre></figure>
+
+<p>Yes, <em>readFileSync</em> returns the data as an array of unsigned 8-bit integers. If we want to convert this to a string for printing, we have to use a TextDecoder. The following code will generate the proper output.</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="p">{</span> <span class="nx">readFileSync</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"deno"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">decoder</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TextDecoder</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">readFileSync</span><span class="p">(</span><span class="s2">"hello.txt"</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span></code></pre></figure>
+
+<h3 id="writing">Writing</h3>
+
+<p>Now that we read and decoded a text file, the next thing we can do is write to a file. The <em>writeFileSync</em> function is there to do exactly that. The function takes 2 arguments: The path to the file, and the content of the file as an Uint8Array. A third parameter, perm, meant to set the file permissions, is not implemented in 0.1 and will probably go in 0.2, we changing this parameter for now has no effect. To write text to a file, we’ll have to use a similar trick as for reading, by using a <em>TextEncoder</em> to convert our String to a <em>Uint8Array</em>.</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="p">{</span> <span class="nx">writeFileSync</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"deno"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">encoder</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TextEncoder</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">encoder</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span><span class="s2">"Hello world</span><span class="err">\</span><span class="s2">n"</span><span class="p">);</span>
+<span class="nx">writeFileSync</span><span class="p">(</span><span class="s2">"hello.txt"</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span></code></pre></figure>
+
+<p>You should see something like the following. This is because Deno disallows writes by default. You need to specifically allow it to write to the filesystem for <em>writeFileSync</em> to work.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno scripts/hello.ts
+deno.PermissionDenied: allow_write is off.
+    at maybeThrowError <span class="o">(</span>deno/js/errors.ts:13:11<span class="o">)</span>
+    at Object.writeFileSync <span class="o">(</span>deno/js/os.ts:150:5<span class="o">)</span>
+    at <span class="nb">eval</span> <span class="o">(</span>file:///data/Documents/deno/scripts/hello.ts:5:1<span class="o">)</span>
+    at localDefine <span class="o">(</span>deno/js/compiler.ts:305:7<span class="o">)</span>
+    at <span class="nb">eval</span> <span class="o">(</span>/data/Documents/deno/scripts/hello.ts, &lt;anonymous&gt;<span class="o">)</span>
+    at DenoCompiler.eval <span class="o">[</span>as _globalEval] <span class="o">(</span>&lt;anonymous&gt;<span class="o">)</span>
+    at DenoCompiler.run <span class="o">(</span>deno/js/compiler.ts:423:10<span class="o">)</span>
+    at denoMain <span class="o">(</span>deno/js/main.ts:88:12<span class="o">)</span>
+    at deno_main.js:1:1</code></pre></figure>
+
+<p>To run Deno with permissions to write to the filesystem, execute it with the <em>–allow-write</em> flag. Inspecting the content of the files shows us that the write has been successful.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno <span class="nt">--allow-write</span> scripts/hello.ts
+➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ <span class="nb">cat </span>hello.txt                                
+Hello world</code></pre></figure>
+
+<h2 id="importing-files">Importing files</h2>
+
+<p>As with any project, putting all your code in one file can be cumbersome. You want to be able to import code from other files. Thankfully, Deno supports loading files from the filesystem, and from HTTP ressources (no HTTPS yet, but this will hopefully come soon). Deno executes the file when imported. You can also make use of ES6 modules.</p>
+
+<h3 id="local-imports">Local imports</h3>
+
+<p>Create a file called print.ts and input this code. This exports a single function called printHello we can call from our main script.</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">export</span> <span class="kd">function</span> <span class="nx">sayHello</span> <span class="p">(</span><span class="nx">subject</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Hello </span><span class="p">${</span><span class="nx">subject</span><span class="p">}</span><span class="s2">!`</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Write this code in your hello.ts script</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="p">{</span> <span class="nx">sayHello</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"./print.ts"</span><span class="p">;</span>
+
+<span class="nx">sayHello</span><span class="p">(</span><span class="s2">"deno"</span><span class="p">);</span>
+<span class="nx">sayHello</span><span class="p">(</span><span class="s2">"world"</span><span class="p">);</span>
+<span class="nx">sayHello</span><span class="p">(</span><span class="s2">"readers"</span><span class="p">);</span></code></pre></figure>
+
+<p>You should see the following output.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno scripts/hello.ts
+Hello deno!
+Hello world!
+Hello readers!</code></pre></figure>
+
+<p>You can then organize them any way you want. Imports are always relative to the calling file’s directory, and not the current working directory.</p>
+
+<h3 id="http-imports">HTTP imports</h3>
+
+<p>Files can be imported from HTTP, but not HTTPS. Deno has an open issue for supporting HTTPS imports, and this is definitely something we want to land as soon as possible.</p>
+
+<p>You can run the following. Be careful though, HTTP requests are insecure and subject to man-in-the-middle attack, so you are running untrusted code. Run this script at your own risk. I would reccomend you run your own localhost-bound HTTP server and serve the file from there.</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="s2">"http://dpourdiplome.5gbfree.com/hello.ts"</span><span class="p">;</span></code></pre></figure>
+
+<p>The first time you run this script, you will get the following console output.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno scripts/hello.ts            
+Downloading http://dpourdiplome.5gbfree.com/hello.ts
+Hello deno!</code></pre></figure>
+
+<p>Deno fetched the HTTP resource and executed it. The new time you run the script, you will see the following…</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno scripts/hello.ts
+Hello deno!</code></pre></figure>
+
+<p>Deno did not fetch the script this time. It used the cached version of the file. To find this cached file, go to your home directory. It should be under <em>.deno/deps/dpourdiplome.5gbfree.com/hello.ts</em>. Deno fetches all HTTP request once and caches them forever. You need to pass the <em>–reload</em> flag to force it to redownload its remote imports, or delete the file from the cache and run the script again.</p>
+
+<h2 id="fetch">Fetch</h2>
+
+<p>Finally, Deno supports basic fetch requests, again only on HTTP. Not all of fetch has been implemented yet, but basic functionnality is there. Fetch returns a Promise. You can check the request HTTP status and get its body. The following code fetches the neverSSL page and prints it to the console.</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="nx">fetch</span><span class="p">(</span><span class="s2">"http://neverssl.com/"</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="k">async</span> <span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="kr">await</span> <span class="nx">response</span><span class="p">.</span><span class="nx">text</span><span class="p">());</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>HTTP imports and fetch will eventually depend on a permission, just like <em>writeFileSync</em> does. It is not implemented yet, but the flag will probably be <em>–allow-net</em> when it is done.</p>
+
+<h2 id="timers">Timers</h2>
+<p>Finally, timers have support for <em>setTimeout</em>, <em>clearTimeout</em>, <em>setInterval</em> and <em>clearInterval</em>. Those work just like they do in Javascript. They run asynchronously, take a callback as its first argument and a delay as the second. After all timers are done, the program exits. Here is an example with a 3 second delay.</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Done"</span><span class="p">);</span>
+<span class="p">},</span> <span class="mi">3000</span><span class="p">);</span></code></pre></figure>
+
+<p>This program should output:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno scripts/hello.ts
+Please <span class="nb">wait </span>3 seconds...
+Done</code></pre></figure>
+
+<p>And here is an example script that counts down for 5 seconds and its output.</p>
+
+<figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Please wait 3 seconds..."</span><span class="p">);</span>
+
+
+<span class="kd">var</span> <span class="nx">done</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">countdown</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">intervalTimer</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Please wait, </span><span class="p">${</span><span class="o">--</span><span class="nx">countdown</span><span class="p">}</span><span class="s2"> remaining`</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">countdown</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">intervalTimer</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">},</span> <span class="mi">1000</span><span class="p">);</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  deno git:<span class="o">(</span>master<span class="o">)</span> ✗ out/debug/deno scripts/hello.ts
+Please <span class="nb">wait</span>, 4 remaining
+Please <span class="nb">wait</span>, 3 remaining
+Please <span class="nb">wait</span>, 2 remaining
+Please <span class="nb">wait</span>, 1 remaining
+Please <span class="nb">wait</span>, 0 remaining</code></pre></figure>
+
+<h2 id="conclusion--reflections">Conclusion / Reflections</h2>
+
+<p>Deno has done a lot of progress since being first mentionned by Ryan Dahl back in June. One of the major things that still hasn’t made it into Deno is SSL, and while writing this article I realized how hard it is to find resources on the web that can host files to be served only over HTTP. I had to create an account on a shady free web host, and I feel weird including this in my article. If someone wants to host the file and serve it, or point me to a file hosting or paste bin service that supports plain HTTP, I would gladly welcome it.</p>
+
+  </div><a class="u-url" href="/deno/typescript/2018/08/24/deno-tutorial.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Tommy Savaria&#39;s blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Tommy Savaria&#39;s blog</li><li><a class="u-email" href="mailto:tommy.savaria@protonmail.ch">tommy.savaria@protonmail.ch</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/NewLunarFire"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">NewLunarFire</span></a></li><li><a href="https://www.twitter.com/57Sav"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">57Sav</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>My blog...</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

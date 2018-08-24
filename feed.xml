@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-08-24T13:17:18-04:00</updated><id>/</id><title type="html">Tommy Savaria’s blog</title><subtitle>My blog...</subtitle><entry><title type="html">Introduction to Deno</title><link href="/deno/typescript/2018/08/24/deno-tutorial.html" rel="alternate" type="text/html" title="Introduction to Deno" /><published>2018-08-24T09:07:00-04:00</published><updated>2018-08-24T09:07:00-04:00</updated><id>/deno/typescript/2018/08/24/deno-tutorial</id><content type="html" xml:base="/deno/typescript/2018/08/24/deno-tutorial.html">&lt;p&gt;Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources.&lt;/p&gt;
+
+&lt;p&gt;The runtime seeks to fix a number of issue brought forward by NodeJS. No more unwieldy package.json or constantly changing dependencies, you either save your file in your project or load them from http ressources, after which they are cached forever. Also, gyp is absent from this, the project is now built with GN and calls to native function is no longer done directly, but through flatbuffers message passing. It also comes with Typescript support out-of-the-box.&lt;/p&gt;
+
+&lt;p&gt;But I’m not here to teach you about the greatness of Deno, but rather to give you a quick tutorial to get started with the new runtime.&lt;/p&gt;
+
+&lt;h2 id=&quot;installing&quot;&gt;Installing&lt;/h2&gt;
+
+&lt;p&gt;The binaries are available from &lt;a href=&quot;https://github.com/denoland/deno/&quot;&gt;Deno’s Github repository&lt;/a&gt; . You can alos read the Readme from the repo and try to compile it yourself. The build process is rather resource-hungry, so make sure you have at least 4GB of RAM and a good SSD, or you could spend hours waiting for the build to finish.&lt;/p&gt;
+
+&lt;h2 id=&quot;running-scripts&quot;&gt;Running scripts&lt;/h2&gt;
+
+&lt;p&gt;In deno, you can run either Javascript or Typescript files. You can run your code by executing Deno with the filename as argument. Look into the repo’s tests folder to see a number of example Deno scripts.&lt;/p&gt;
+
+&lt;h2 id=&quot;console-output&quot;&gt;Console output&lt;/h2&gt;
+
+&lt;p&gt;As with any language / framework, the first thing you can do is output a message to the console. You can simply write the following to print &lt;em&gt;Hello World!&lt;/em&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hello world!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;filesystem-access&quot;&gt;Filesystem Access&lt;/h2&gt;
+
+&lt;p&gt;Deno offers basic synchronous filesystem access with the &lt;em&gt;readFileSync&lt;/em&gt; and &lt;em&gt;writeFileSync&lt;/em&gt; functions. The &lt;em&gt;readFileSync&lt;/em&gt; function takes the file’s path as argument (which can either by a path relative to the current working directory or an absoule path) and returns the file’s contents. Create a file with ‘Hello World’ in it then save it to the filesystem, and read it by the executing the following:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;deno&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;hello.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The output should be the following&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno scripts/hello.ts
+Uint8Array &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; 0: 72, 1: 101, 2: 108, 3: 108, 4: 111, 5: 32, 6: 87, 7: 111, 8: 114, 9: 108, 10: 100 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Yes, &lt;em&gt;readFileSync&lt;/em&gt; returns the data as an array of unsigned 8-bit integers. If we want to convert this to a string for printing, we have to use a TextDecoder. The following code will generate the proper output.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;deno&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decoder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TextDecoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;hello.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;writing&quot;&gt;Writing&lt;/h3&gt;
+
+&lt;p&gt;Now that we read and decoded a text file, the next thing we can do is write to a file. The &lt;em&gt;writeFileSync&lt;/em&gt; function is there to do exactly that. The function takes 2 arguments: The path to the file, and the content of the file as an Uint8Array. A third parameter, perm, meant to set the file permissions, is not implemented in 0.1 and will probably go in 0.2, we changing this parameter for now has no effect. To write text to a file, we’ll have to use a similar trick as for reading, by using a &lt;em&gt;TextEncoder&lt;/em&gt; to convert our String to a &lt;em&gt;Uint8Array&lt;/em&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;writeFileSync&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;deno&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encoder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TextEncoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encoder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hello world&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;writeFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;hello.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You should see something like the following. This is because Deno disallows writes by default. You need to specifically allow it to write to the filesystem for &lt;em&gt;writeFileSync&lt;/em&gt; to work.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno scripts/hello.ts
+deno.PermissionDenied: allow_write is off.
+    at maybeThrowError &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;deno/js/errors.ts:13:11&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at Object.writeFileSync &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;deno/js/os.ts:150:5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file:///data/Documents/deno/scripts/hello.ts:5:1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at localDefine &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;deno/js/compiler.ts:305:7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at &lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/data/Documents/deno/scripts/hello.ts, &amp;lt;anonymous&amp;gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at DenoCompiler.eval &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;as _globalEval] &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;lt;anonymous&amp;gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at DenoCompiler.run &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;deno/js/compiler.ts:423:10&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at denoMain &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;deno/js/main.ts:88:12&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    at deno_main.js:1:1&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To run Deno with permissions to write to the filesystem, execute it with the &lt;em&gt;–allow-write&lt;/em&gt; flag. Inspecting the content of the files shows us that the write has been successful.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno &lt;span class=&quot;nt&quot;&gt;--allow-write&lt;/span&gt; scripts/hello.ts
+➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;hello.txt                                
+Hello world&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;importing-files&quot;&gt;Importing files&lt;/h2&gt;
+
+&lt;p&gt;As with any project, putting all your code in one file can be cumbersome. You want to be able to import code from other files. Thankfully, Deno supports loading files from the filesystem, and from HTTP ressources (no HTTPS yet, but this will hopefully come soon). Deno executes the file when imported. You can also make use of ES6 modules.&lt;/p&gt;
+
+&lt;h3 id=&quot;local-imports&quot;&gt;Local imports&lt;/h3&gt;
+
+&lt;p&gt;Create a file called print.ts and input this code. This exports a single function called printHello we can call from our main script.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;k&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`Hello &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;!`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Write this code in your hello.ts script&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;./print.ts&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;deno&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;world&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;readers&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You should see the following output.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno scripts/hello.ts
+Hello deno!
+Hello world!
+Hello readers!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You can then organize them any way you want. Imports are always relative to the calling file’s directory, and not the current working directory.&lt;/p&gt;
+
+&lt;h3 id=&quot;http-imports&quot;&gt;HTTP imports&lt;/h3&gt;
+
+&lt;p&gt;Files can be imported from HTTP, but not HTTPS. Deno has an open issue for supporting HTTPS imports, and this is definitely something we want to land as soon as possible.&lt;/p&gt;
+
+&lt;p&gt;You can run the following. Be careful though, HTTP requests are insecure and subject to man-in-the-middle attack, so you are running untrusted code. Run this script at your own risk. I would reccomend you run your own localhost-bound HTTP server and serve the file from there.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;http://dpourdiplome.5gbfree.com/hello.ts&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The first time you run this script, you will get the following console output.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno scripts/hello.ts            
+Downloading http://dpourdiplome.5gbfree.com/hello.ts
+Hello deno!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Deno fetched the HTTP resource and executed it. The new time you run the script, you will see the following…&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno scripts/hello.ts
+Hello deno!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Deno did not fetch the script this time. It used the cached version of the file. To find this cached file, go to your home directory. It should be under &lt;em&gt;.deno/deps/dpourdiplome.5gbfree.com/hello.ts&lt;/em&gt;. Deno fetches all HTTP request once and caches them forever. You need to pass the &lt;em&gt;–reload&lt;/em&gt; flag to force it to redownload its remote imports, or delete the file from the cache and run the script again.&lt;/p&gt;
+
+&lt;h2 id=&quot;fetch&quot;&gt;Fetch&lt;/h2&gt;
+
+&lt;p&gt;Finally, Deno supports basic fetch requests, again only on HTTP. Not all of fetch has been implemented yet, but basic functionnality is there. Fetch returns a Promise. You can check the request HTTP status and get its body. The following code fetches the neverSSL page and prints it to the console.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;http://neverssl.com/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;await&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;HTTP imports and fetch will eventually depend on a permission, just like &lt;em&gt;writeFileSync&lt;/em&gt; does. It is not implemented yet, but the flag will probably be &lt;em&gt;–allow-net&lt;/em&gt; when it is done.&lt;/p&gt;
+
+&lt;h2 id=&quot;timers&quot;&gt;Timers&lt;/h2&gt;
+&lt;p&gt;Finally, timers have support for &lt;em&gt;setTimeout&lt;/em&gt;, &lt;em&gt;clearTimeout&lt;/em&gt;, &lt;em&gt;setInterval&lt;/em&gt; and &lt;em&gt;clearInterval&lt;/em&gt;. Those work just like they do in Javascript. They run asynchronously, take a callback as its first argument and a delay as the second. After all timers are done, the program exits. Here is an example with a 3 second delay.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;setTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Done&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This program should output:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno scripts/hello.ts
+Please &lt;span class=&quot;nb&quot;&gt;wait &lt;/span&gt;3 seconds...
+Done&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And here is an example script that counts down for 5 seconds and its output.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-typescript&quot; data-lang=&quot;typescript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Please wait 3 seconds...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;done&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;countdown&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;intervalTimer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setInterval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;`Please wait, &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;countdown&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; remaining`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;countdown&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;clearInterval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;intervalTimer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;➜  deno git:&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;master&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ✗ out/debug/deno scripts/hello.ts
+Please &lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt;, 4 remaining
+Please &lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt;, 3 remaining
+Please &lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt;, 2 remaining
+Please &lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt;, 1 remaining
+Please &lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt;, 0 remaining&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;conclusion--reflections&quot;&gt;Conclusion / Reflections&lt;/h2&gt;
+
+&lt;p&gt;Deno has done a lot of progress since being first mentionned by Ryan Dahl back in June. One of the major things that still hasn’t made it into Deno is SSL, and while writing this article I realized how hard it is to find resources on the web that can host files to be served only over HTTP. I had to create an account on a shady free web host, and I feel weird including this in my article. If someone wants to host the file and serve it, or point me to a file hosting or paste bin service that supports plain HTTP, I would gladly welcome it.&lt;/p&gt;</content><author><name></name></author><summary type="html">Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources.</summary></entry></feed>
