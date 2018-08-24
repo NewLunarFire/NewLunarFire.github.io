@@ -9,15 +9,15 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources." />
 <meta property="og:description" content="Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources." />
-<link rel="canonical" href="/deno/typescript/2018/08/24/deno-tutorial.html" />
-<meta property="og:url" content="/deno/typescript/2018/08/24/deno-tutorial.html" />
+<link rel="canonical" href="https://newlunarfire.github.io//deno/2018/08/24/deno-tutorial.html" />
+<meta property="og:url" content="https://newlunarfire.github.io//deno/2018/08/24/deno-tutorial.html" />
 <meta property="og:site_name" content="Tommy Savaria’s blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2018-08-24T09:07:00-04:00" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"/deno/typescript/2018/08/24/deno-tutorial.html"},"@type":"BlogPosting","url":"/deno/typescript/2018/08/24/deno-tutorial.html","headline":"Introduction to Deno","dateModified":"2018-08-24T09:07:00-04:00","datePublished":"2018-08-24T09:07:00-04:00","description":"Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources.","@context":"http://schema.org"}</script>
+{"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://newlunarfire.github.io//deno/2018/08/24/deno-tutorial.html"},"url":"https://newlunarfire.github.io//deno/2018/08/24/deno-tutorial.html","headline":"Introduction to Deno","dateModified":"2018-08-24T09:07:00-04:00","datePublished":"2018-08-24T09:07:00-04:00","description":"Deno is a new Typescript runtime built on top of Google’s V8 engine. It recently reached milestone 0.1, which is the first major milestone for this project. I have worked a bit on Deno, mostly on implementing the synchronous write functions and imports from http resources.","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Tommy Savaria's blog" /></head>
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://newlunarfire.github.io//feed.xml" title="Tommy Savaria's blog" /></head>
 <body><header class="site-header" role="banner">
 
   <div class="wrapper"><a class="site-title" rel="author" href="/">Tommy Savaria&#39;s blog</a><nav class="site-nav">
@@ -148,9 +148,11 @@ Hello readers!</code></pre></figure>
 
 <h3 id="http-imports">HTTP imports</h3>
 
-<p>Files can be imported from HTTP, but not HTTPS. Deno has an open issue for supporting HTTPS imports, and this is definitely something we want to land as soon as possible.</p>
+<p>Files can be imported from HTTP, but not HTTPS. Deno has an open issue for supporting HTTPS imports, and this is definitely something we want to land as soon as possible. The following script demonstrates an HTTP import.</p>
 
-<p>You can run the following. Be careful though, HTTP requests are insecure and subject to man-in-the-middle attack, so you are running untrusted code. Run this script at your own risk. I would reccomend you run your own localhost-bound HTTP server and serve the file from there.</p>
+<p style="color:whitesmoke; background-color: firebrick; border-radius: 15px; padding-top: 10px; padding-bottom: 10px; padding-left: 5px; padding-right: 5px;">
+Be careful though, HTTP requests are insecure and subject to man-in-the-middle attack, so <b>you are effectively running untrusted code</b>. Run this script at your own risk. I would reccomend you run your own localhost-bound HTTP server instead and serve the file from there.
+</p>
 
 <figure class="highlight"><pre><code class="language-typescript" data-lang="typescript"><span class="k">import</span> <span class="s2">"http://dpourdiplome.5gbfree.com/hello.ts"</span><span class="p">;</span></code></pre></figure>
 
@@ -216,7 +218,7 @@ Please <span class="nb">wait</span>, 0 remaining</code></pre></figure>
 
 <p>Deno has done a lot of progress since being first mentionned by Ryan Dahl back in June. One of the major things that still hasn’t made it into Deno is SSL, and while writing this article I realized how hard it is to find resources on the web that can host files to be served only over HTTP. I had to create an account on a shady free web host, and I feel weird including this in my article. If someone wants to host the file and serve it, or point me to a file hosting or paste bin service that supports plain HTTP, I would gladly welcome it.</p>
 
-  </div><a class="u-url" href="/deno/typescript/2018/08/24/deno-tutorial.html" hidden></a>
+  </div><a class="u-url" href="/deno/2018/08/24/deno-tutorial.html" hidden></a>
 </article>
 
       </div>
