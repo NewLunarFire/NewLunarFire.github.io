@@ -1,0 +1,139 @@
+<html>
+    <head>
+        <title>Bingo du CM</title>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="container" class="container">
+            <div class="header">B</div>
+            <div class="header">I</div>
+            <div class="header">N</div>
+            <div class="header">G</div>
+            <div class="header">O</div>
+        </div>
+        <div class="rainbow" id="win"></div>
+        <template id="item-template">
+            <div class="item item-border-top item-border-right">
+                    <span style="padding-left: 5%; padding-right: 5%;"></span>
+                    <!--<img src="http://lorempixel.com/200/300" />-->
+                    <img class="after hidden" src="canada.png" />
+            </div>
+        </template>
+        <script type="text/javascript">
+            var xs = [
+                [false, false, false, false, false],
+                [false, false, false, false, false],
+                [false, false, true, false, false],
+                [false, false, false, false, false],
+                [false, false, false, false, false]
+            ];
+
+            var phrases = [
+                "On compare Bernier et Scheer",
+                "Personne n'écoute May",
+                "Protéger les Canadien.ne.s",
+                "Dire qu'un parti est pire qu'un autre",
+                "« Laïcité »",
+                "« Rééquilibrer les finances publiques »",
+                "On fait référence au pétrole albertain",
+                "Un chef fait un aparté pour s'adresser directement aux Canadien.ne.s",
+                "Promettre quelque chose, mais qui est de compétence provinciale",
+                "Se clamer progressiste",
+                "« Remettre de l'argent dans les poches de la classe moyenne »",
+                "Jagmeet Signgh parle des difficultés d'être une minorité visible",
+                "« ALENA »",
+                "On mentionne les « costumes » de Trudeau",
+                "On fait référence à l'achat de pipelines",
+                "Blanchet accuse les autres chefs d'avoir un discours différent au Québec",
+                "On parle de cannabis",
+                "« C'est à mon tour »",
+                "On attaque Scheer sur l'avortement",
+                "Être fier d'être canadien",
+                "Se dire qu'on est le seul parti qui a un vrai plan pour l'environnement",
+                "L'animateur perd le contrôle",
+                "Bernier parle d'immigration de masse",
+                "« Respecter le Québec »"
+            ];
+
+            function onItemClick(i, j) {
+                return function() {
+                    xs[i][j] = !xs[i][j];
+                    var img = document.querySelector(`#item-${i}-${j}`).querySelector("img");
+
+                    if(xs[i][j]) {
+                        img.classList.remove("hidden");
+                    } else {
+                        img.classList.add("hidden");
+                    }
+
+                    var winner = false;
+                    for(var k = 0 ; k < 5; k++) {
+                        var row = 0;
+                        var col = 0;
+                        var diag1 = 0;
+                        var diag2 = 0;
+
+                        for(var l = 0; l < 5; l++) {
+                            if(xs[k][l]) {
+                                row++;
+                            }
+                            if(xs[l][k]) {
+                                col++;
+                            }
+                            if(xs[l][l]) {
+                                diag1++;
+                            }
+                            if(xs[l][4-l]) {
+                                diag2++;
+                            }
+                        }
+
+                        if(row == 5 || col == 5 || diag1 == 5 || diag2 == 5) {
+                            winner = true;
+                            break;
+                        }
+                    }
+
+                    if(winner) {
+                        document.querySelector("#win").textContent = "BINGO!";
+                    } else {
+                        document.querySelector("#win").textContent = "";
+                    }
+                }
+            }  
+
+            var container = document.getElementById("container");
+            var item = document.querySelector("#item-template");
+            var phrasesRestantes = phrases.slice();
+
+            for(var i = 0; i < 5; i++) {
+                for(var j = 0; j < 5; j++) {
+                    var clone = document.importNode(item.content, true);
+
+                    if (i != 2 || j != 2) {
+                        var index = Math.floor(Math.random() * phrasesRestantes.length);
+                        clone.querySelector(".item").querySelector("span").textContent = phrasesRestantes[index];
+                        phrasesRestantes.splice(index, 1);
+                    }            
+
+                    clone.querySelector(".item").setAttribute("id", `item-${i}-${j}`)
+                    
+                    if(i == 4 && j == 4) {
+                        clone.querySelector(".item").classList.remove("item-border-right");
+                    }
+
+                    if(i == 2 && j == 2) {
+                        clone.querySelector(".item").querySelector("img").classList.remove("hidden");
+                    } else {
+                        clone.querySelector(".item").onclick = onItemClick(i, j);
+                    }
+
+                    
+                    container.appendChild(clone);
+                }
+            }
+
+        </script>
+    </body>
+</html>
